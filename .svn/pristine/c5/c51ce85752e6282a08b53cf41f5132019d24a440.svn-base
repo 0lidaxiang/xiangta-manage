@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2016-4-25 15:17:59 by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping >
+    <class name="com.manage.po.FUserinfo" table="f_userinfo" >
+        <id name="uidd" type="string">
+            <column name="uidd" />
+            <generator class="assigned" />
+        </id>
+        <property name="usercode" type="string">
+            <column name="usercode" length="20" />
+        </property>
+        <property name="password" type="string">
+            <column name="password" length="20" />
+        </property>
+    </class>
+</hibernate-mapping>

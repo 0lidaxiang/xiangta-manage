@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd
+                    http://www.springframework.org/schema/mvc
+                    http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<!-- 注解扫描包,启用自动扫描 -->
+	<context:component-scan base-package="com.*" />
+
+<!-- 开启注解, -->
+<!-- <mvc:annotation-driven /> -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />  
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"></bean>  
+    
+
+<!-- 配置数据源 -->
+<bean id="dataSource"
+    class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+    <property name="url" value="jdbc:mysql://localhost:3306/club"></property>
+    <property name="username" value="root"></property>
+    <property name="password" value="123456"></property>
+</bean>
+
+<!-- 配置SessionFactory -->
+<bean id="sessionFactory"
+    class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+    <property name="dataSource" ref="dataSource" />
+	<property name="configLocations">
+		<value>classpath:hibernate.cfg.xml</value>
+	</property>		
+</bean>
+
+<!-- 配置一个事务管理器 -->
+<bean id="transactionManager"
+    class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <property name="sessionFactory" ref="sessionFactory" />
+</bean>
+
+    <!-- 需要引入tx的命名空间 -->  
+    <!-- 这是事务通知操作，使用的事务管理器引用自 transactionManager -->  
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">  
+        <tx:attributes>  
+	<!-- 指定哪些方法需要加入事务，这里懒惰一下全部加入，可以使用通配符来只加入需要的方法   -->
+            <tx:method name="insert*" propagation="REQUIRED"  />  
+            <tx:method name="update*" propagation="REQUIRED" />  
+            <tx:method name="delete*" propagation="REQUIRED" />  
+            <tx:method name="get*" propagation="REQUIRED" read-only="true"/>  
+            <tx:method name="query*" propagation="REQUIRED" read-only="true"/>  
+        </tx:attributes>  
+    </tx:advice>   
+    <!-- 需要引入aop的命名空间 -->  
+    <aop:config>  
+        <!-- 切入点指明了在执行Service的所有方法时产生事务拦截操作 -->  
+        <aop:pointcut id="daoMethods" expression="execution(* com.manage.service.impl.*.*(..))" />      
+        <!-- 定义了将采用何种拦截操作，这里引用到 txAdvice -->  
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="daoMethods" />  
+    </aop:config>
+</beans>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+		"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory name="club">
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.password">123456</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/club?useOldAliasMetadataBehavior=true</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.show_sql">true</property>
+        <property name = "dbcp.maxActive" >100</property>   
+        <property name = "dbcp.whenExhaustedAction" >1</property>   
+        <property name = "dbcp.maxWait" >60000</property>   
+        <property name = "dbcp.maxIdle" >10</property>
+        <mapping resource="com/manage/po/FUserinfo.hbm.xml" />
+    </session-factory>
+</hibernate-configuration>
